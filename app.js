@@ -174,7 +174,7 @@ io.on('connection', (socket) => {//connection
     socket.on("bye", (data) => {
         console.log("바이바이")
       console.log(data)
-      io.sockets.emit("bye",`${data.nickname}님이 나갔어요!`)
+
     })
     
     socket.on('disconnect', (data) => { 
@@ -182,7 +182,7 @@ io.on('connection', (socket) => {//connection
     delete userList[socket.id]
     console.log(socket.id,"연결 해제된 소켓 아이디")
     //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
-      socket.broadcast.emit("bye",userList[socket.id])
+      socket.broadcast.emit("bye",{nickname:userList[socket.id],message:`${userList[socket.id]} 님이 나갔어요!` })
       console.log('UserDisconnected');
     });
     socket.on('message', (data) => { 
