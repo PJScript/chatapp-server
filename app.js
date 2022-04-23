@@ -183,7 +183,7 @@ io.on('connection', (socket) => {//connection
       let imgUrl = data.imgUrl
       let date = new Date();
 
-      connection.query(`select * from user where nickname=${nickname}`, (err,result) => {
+      connection.query(`select * from user where nickname="${nickname}"`, (err,result) => {
         if(!data.nickname){
             io.to(socket.id).emit("exit","exit")
             return;
@@ -204,7 +204,7 @@ io.on('connection', (socket) => {//connection
     let message = `${userList[socket.id]} 님이 나갔습니다!`
     let date = new Date();
     //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
-      connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", "null","${date}")`, (err, result) =>{
+      connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,"${date}")`, (err, result) =>{
       socket.broadcast.emit("bye",{nickname:'systemout',message:message })
 
       })
