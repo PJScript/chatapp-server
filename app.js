@@ -183,16 +183,18 @@ io.on('connection', (socket) => {//connection
       let imgUrl = data.imgUrl
       let date = new Date();
 
+
+
       connection.query(`select * from user where nickname="${nickname}"`, (err,result) => {
         if(!data.nickname){
             io.to(socket.id).emit("exit","exit")
             return;
         }
-        
+        console.log(result,"select")
         let id = result[0]
         connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${id},"${message}","${imgUrl}","${date}")`,(err,result) => {
       io.sockets.emit({nickname:nickname,message:message,imgUrl:imgUrl})
-          
+          console.log("insert")
         })
       })
       
