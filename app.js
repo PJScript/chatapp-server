@@ -174,7 +174,28 @@ io.on('connection', (socket) => {//connection
     socket.on("bye", (data) => {
         console.log("바이바이")
       console.log(data)
+    })
 
+    socket.on("img", (data) => {
+      console.log("이미지")
+      let nickname = data.nickname;
+      let message = "";
+      let imgUrl = data.imgUrl
+      let date = new Date();
+
+      connection.query(`select * from user where nickname=${nickname}`, (err,result) => {
+        if(!data.nickname){
+            io.to(socket.id).emit("exit","exit")
+            return;
+        }
+        
+        let id = result[0]
+        connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${id},"${message}","${imgUrl}","${date}")`,(err,result) => {
+      io.sockets.emit({nickname:nickname,message:message,imgUrl:imgUrl})
+          
+        })
+      })
+      
     })
     
     socket.on('disconnect', (data) => { 
