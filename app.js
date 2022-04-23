@@ -193,8 +193,8 @@ io.on('connection', (socket) => {//connection
         console.log(result,"select")
         let id = result[0]
         connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${id},"${message}","${imgUrl}","${date}")`,(err,result) => {
-      io.sockets.emit({nickname:nickname,message:message,imgUrl:imgUrl})
-          console.log("insert")
+      io.sockets.emit("img",{nickname:nickname,message:message,imgUrl:imgUrl})
+      console.log(result,"insert")
         })
       })
       
