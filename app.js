@@ -14,7 +14,7 @@ require("dotenv").config()
 //   password:process.env.DB_PASSWORD,
 //   port:process.env.DB_PORT,
 // })
-
+let userList = []
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USERNAME,
@@ -158,7 +158,8 @@ io.on('connection', (socket) => {//connection
                 return;
             }
         socket.broadcast.emit('welcome',`${data.nickname}님이 입장 했어요!`);
-
+        userList.push( { [socket.id]:data.nickname } )
+        console.log(userList,"유저리스트")
             let date = new Date();
             let id = result[0].id
             connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${1},"${data.nickname}님이 입장 했어요!",null,"${date}")`, () => {
