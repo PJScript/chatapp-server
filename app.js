@@ -181,7 +181,7 @@ io.on('connection', (socket) => {//connection
     //   console.log(socket,"소켓",data,"데이터")
     console.log(socket.id,"연결 해제된 소켓 아이디")
     //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
-      socket.broadcast.emit("bye",{nickname:userList[socket.id],message:`${userList[socket.id]} 님이 나갔어요!` })
+      socket.broadcast.emit("bye",{nickname:'systemout',message:`${userList[socket.id]} 님이 나갔어요!` })
       delete userList[socket.id]
      
       console.log('UserDisconnected');
