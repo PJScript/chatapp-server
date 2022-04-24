@@ -233,11 +233,14 @@ io.on('connection', (socket) => {//connection
           timezoneDate.setHours(timezoneDate.getHours()+9)
           console.log(date,"날짜")
           
+          let sql = {accountidx:id,content:message,imgUrl:imgUrl,date:date}
           
           //메세지 입력 시 마지막으로 보낸 시간을 항상 기록 한다.
           connection.query(`update user set last_chat="${date}" where nickname="${data.nickname}"`,(err, result)=>{
 
-            connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${id},"${message}","${imgUrl}","${date}")`)
+            connection.query(`insert into chats set ?`,sql,(err,result) => {
+
+            })
           })
           console.log(timezoneDate,result[0].last_chat)
           console.log(timezoneDate - result[0].last_chat)
