@@ -276,7 +276,7 @@ io.on('connection', (socket) => {//connection
           console.log(message,"메세지")
           let imgUrl = data.imgUrl
           let lastchat = result[0].last_chat
-          let date = date.date
+          let date = data.date
           console.log(date,"날짜")
           
           let sql = {accountidx:id,content:message,imgUrl:imgUrl,date:date}
