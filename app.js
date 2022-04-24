@@ -76,7 +76,7 @@ app.post('/removechat', (req,res) => {
       console.log(result,"result-testetst")
       console.log(result[0].id,"result chats")
 
-      connection.query(`update user set clearidx=${result[0].id} where nickname="${req.body.nickname}"`,()=>{
+      connection.query(`update user set clearidx=${result[0].id + 1} where nickname="${req.body.nickname}"`,()=>{
         res.status(200).send();
     })
     })
@@ -148,6 +148,18 @@ app.post('/signup', (req, res) => {
       }
     })
     // res.status(200).json("good")
+})
+
+
+app.post("/pw", (req,res) => {
+  let sql = {password:res.body.pw}
+  if(!res.body.pw || !res.body){
+      res.status(404).send();
+      return;
+  }
+  connection.query(`update user set=?`,sql, (req,res) => {
+    res.status(200).send();
+  })
 })
 
 
