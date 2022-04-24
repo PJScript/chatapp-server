@@ -73,7 +73,7 @@ app.post('/prevchat', (req,res) => {
     console.log(req.body)
     console.log(typeof(req.query.p))
     let p = Number(req.query.p)
-    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname from chats, user where chats.accountidx = user.id ORDER BY id LIMIT 50;`, (err,result) => {
+    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname from chats, user where chats.accountidx = user.id;`, (err,result) => {
     
        res.status(200).json(result)   
     })
