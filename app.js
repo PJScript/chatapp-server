@@ -75,7 +75,7 @@ app.post('/removechat', (req,res) => {
     connection.query(`select * from chats order by id desc LIMiT 1,1;`, (err,result) =>{
       console.log(result,"result-testetst")
 
-      connection.query(`update user set clearidx=${result[0].id} where nickname="${req.body.nickname}"`,()=>{
+      connection.query(`update user set clearidx=${result[0].chats} where nickname="${req.body.nickname}"`,()=>{
         res.status(200).send();
     })
     })
