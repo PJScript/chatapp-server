@@ -75,7 +75,7 @@ app.post('/removechat', (req,res) => {
     connection.query(`select * from chats order by id desc LIMiT 1,1;`, (err,result) =>{
       console.log(result,"result-testetst")
       console.log(result[0].id,"result chats")
-
+      
       connection.query(`update user set clearidx=${result[0].id + 1} where nickname="${req.body.nickname}"`,()=>{
         res.status(200).send();
     })
@@ -89,7 +89,8 @@ app.post('/prevchat', (req,res) => {
     let p = Number(req.query.p)
 
     connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
-       res.status(200).json(result)   
+        console.log(result,"result")
+        res.status(200).json(result)   
     })
 })
 
