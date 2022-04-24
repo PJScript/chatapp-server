@@ -90,7 +90,7 @@ app.post('/prevchat', (req,res) => {
 
     connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
         console.log(result,"result")
-        console.log(result[0].date.toLocaleTimeString())
+        // console.log(result[0].date.toLocaleTimeString())
         res.status(200).json(result)   
     })
 })
@@ -142,8 +142,9 @@ app.post('/signup', (req, res) => {
 
     //   console.log(searchUser.length,"길이")
       if(searchUser === undefined || searchUser.length === 0){
-          connection.query(`insert into user(account,password,clearidx,nickname) values("${account}","${cryptoPassword}",${id},"${nickname}")`, (err, result) => {
+          connection.query(`insert into user(account,password,date,clearidx,nickname) values("${account}","${cryptoPassword}","${date}",${id},"${nickname}")`, (err, result) => {
             console.log(result,"result123123")
+            console.log(err,"에러에러")
             
             res.status(200).json("test")
           })
@@ -291,7 +292,7 @@ io.on('connection', (socket) => {//connection
           })
           console.log(timezoneDate,result[0].last_chat)
           console.log(timezoneDate - result[0].last_chat)
-          console.log(timezoneDate.toLocaleTimeString())
+
         //   if(timezoneDate - result[0].last_chat > 10){
         //     console.log(socket.id,"소켓 아이디")
         //     io.to(socket.id).emit("exit","exit")
