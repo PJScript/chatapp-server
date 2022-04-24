@@ -131,6 +131,7 @@ app.post('/signup', (req, res) => {
     let cryptoPassword = cryptoUtils(password)
     let date = new Date();
     date.setHours(date.getHours()+9)
+    date.toISOString();
     console.log(date)
 
     console.log(cryptoPassword.length)
