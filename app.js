@@ -198,6 +198,7 @@ io.on('connection', (socket) => {//connection
         socket.broadcast.emit('welcome',`${data.nickname}님이 입장 했어요!`);
         
             let date = new Date();
+            date.setHours(data.getHours() + 9)
             let id = result[0].id
             connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${1},"${data.nickname}님이 입장 했어요!",null,"${date}")`, () => {
               
@@ -218,7 +219,9 @@ io.on('connection', (socket) => {//connection
       let nickname = data.nickname;
       let message = "";
       let imgUrl = data.imgUrl
-      let date = new Date().toISOString();
+      let date = new Date()
+      date.setHours(data.getHours() + 9)
+
 
 
 
@@ -241,7 +244,9 @@ io.on('connection', (socket) => {//connection
     //   console.log(socket,"소켓",data,"데이터")
     console.log(socket.id,"연결 해제된 소켓 아이디")
     let message = `${userList[socket.id]} 님이 나갔습니다!`
-    let date = new Date().toISOString()
+    let date = new Date()
+    date.setHours(data.getHours() + 9)
+
     //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
       connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,"${date}")`, (err, result) =>{
       socket.broadcast.emit("bye",{nickname:'systemout',message:message })
@@ -266,7 +271,7 @@ io.on('connection', (socket) => {//connection
           let imgUrl = data.imgUrl
           let lastchat = result[0].last_chat
           let date = new Date();
-          date.setDate(date.getHours() + 9)
+          date.setHours(date.getHours() + 9)
           let timezoneDate = new Date();
           timezoneDate.setHours(timezoneDate.getHours()+9)
           console.log(date,"날짜")
