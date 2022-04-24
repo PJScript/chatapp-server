@@ -142,7 +142,7 @@ app.post('/signup', (req, res) => {
 
     //   console.log(searchUser.length,"길이")
       if(searchUser === undefined || searchUser.length === 0){
-          connection.query(`insert into user(account,password,date,clearidx,nickname) values("${account}","${cryptoPassword}",${date}, ${id},"${nickname}")`, (err, result) => {
+          connection.query(`insert into user(account,password,clearidx,nickname) values("${account}","${cryptoPassword}",${id},"${nickname}")`, (err, result) => {
             console.log(result,"result123123")
             
             res.status(200).json("test")
