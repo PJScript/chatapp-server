@@ -87,9 +87,19 @@ app.post('/prevchat', (req,res) => {
     console.log(req.body)
     console.log(typeof(req.query.p))
     let p = Number(req.query.p)
-    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
-       res.status(200).json(result)   
+
+    connection.query(`select * from user where account="${req.body.nickname}"`, () => {
+        if(!result[0].clearidx){
+            connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id`, (err,result) => {
+                res.status(200).json(result)   
+             })
+        }else{
+            connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
+                res.status(200).json(result)   
+             })
+        }
     })
+   
 })
 
 app.post('/login', (req,res) => {
