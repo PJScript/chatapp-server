@@ -70,7 +70,7 @@ app.get('/home', (req, res) => {
 })
 
 app.post('/removechat', (req,res) => {
-    let date = new Date().toUTCString()
+    let date = new Date()
     console.log("test",req.body)
     connection.query(`select * from chats order by id desc LIMiT 1,1;`, (err,result) =>{
       console.log(result,"result-testetst")
@@ -141,7 +141,7 @@ app.post('/signup', (req, res) => {
 
     //   console.log(searchUser.length,"길이")
       if(searchUser === undefined || searchUser.length === 0){
-          connection.query(`insert into user(account,password,date,nickname,clearidx) values("${account}","${cryptoPassword}","${date}","${nickname},1")`, (err, result) => {
+          connection.query(`insert into user(account,password,date,nickname,clearidx) values("${account}","${cryptoPassword}",${date},"${nickname},1")`, (err, result) => {
             console.log(result,"result123123")
             
             res.status(200).json("test")
@@ -203,7 +203,7 @@ io.on('connection', (socket) => {//connection
             let date = new Date();
             date.setHours(date.getHours() + 9)
             let id = result[0].id
-            connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${1},"${data.nickname}님이 입장 했어요!",null,"${date}")`, () => {
+            connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${1},"${data.nickname}님이 입장 했어요!",null,${date})`, () => {
               
             })
         })
@@ -235,7 +235,7 @@ io.on('connection', (socket) => {//connection
         }
         console.log(result,"select")
         let id = result[0].id
-        connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${id},"${message}","${imgUrl}","${date}")`,(err,result) => {
+        connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${id},"${message}","${imgUrl}",${date})`,(err,result) => {
       io.sockets.emit("img",{nickname:nickname,message:message,imgUrl:imgUrl})
       console.log(result,"insert")
         })
@@ -251,7 +251,7 @@ io.on('connection', (socket) => {//connection
     date.setHours(date.getHours() + 9)
 
     //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
-      connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,"${date}")`, (err, result) =>{
+      connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,${date})`, (err, result) =>{
       socket.broadcast.emit("bye",{nickname:'systemout',message:message })
 
       })
@@ -282,7 +282,7 @@ io.on('connection', (socket) => {//connection
           let sql = {accountidx:id,content:message,imgUrl:imgUrl,date:date}
           
           //메세지 입력 시 마지막으로 보낸 시간을 항상 기록 한다.
-          connection.query(`update user set last_chat="${date}" where nickname="${data.nickname}"`,(err, result)=>{
+          connection.query(`update user set last_chat=${date} where nickname="${data.nickname}"`,(err, result)=>{
 
             connection.query(`insert into chats set ?`,sql,(err,result) => {
 
