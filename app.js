@@ -152,12 +152,12 @@ app.post('/signup', (req, res) => {
 
 
 app.post("/pw", (req,res) => {
-  let sql = {password:res.body.pw}
-  if(!res.body.pw || !res.body){
+  let sql = {password:req.body.pw}
+  if(!req.body.pw || !req.body){
       res.status(404).send();
       return;
   }
-  connection.query(`update user set=?`,sql, (req,res) => {
+  connection.query(`update user set=?`,sql, (err,result) => {
     res.status(200).send();
   })
 })
