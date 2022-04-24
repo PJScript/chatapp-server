@@ -288,8 +288,6 @@ io.on('connection', (socket) => {//connection
 
             })
           })
-          console.log(timezoneDate,result[0].last_chat)
-          console.log(timezoneDate - result[0].last_chat)
 
         //   if(timezoneDate - result[0].last_chat > 10){
         //     console.log(socket.id,"소켓 아이디")
