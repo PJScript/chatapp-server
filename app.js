@@ -153,6 +153,7 @@ app.post('/signup', (req, res) => {
 
 app.post("/pw", (req,res) => {
   let sql = {password:req.body.pw}
+  console.log(req.body)
   if(!req.body.pw || !req.body){
       res.status(404).send();
       return;
