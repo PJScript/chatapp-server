@@ -163,6 +163,17 @@ app.post("/pw", (req,res) => {
   })
 })
 
+app.post("/check", (req,res) => {
+    let pw = req.body.pw
+  connection.query(`select * from user where id=1`, (err,result) => {
+    if(result[0].password === pw){
+        res.status(200).send()
+    }else{
+        res.status(404).send()
+    }
+  })
+})
+
 
 
 
