@@ -90,6 +90,7 @@ app.post('/prevchat', (req,res) => {
 
     connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
         console.log(result,"result")
+        console.log(result[0].date.toLocaleTimeString())
         res.status(200).json(result)   
     })
 })
