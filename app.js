@@ -87,8 +87,7 @@ app.post('/prevchat', (req,res) => {
     console.log(req.body)
     console.log(typeof(req.query.p))
     let p = Number(req.query.p)
-    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id;`, (err,result) => {
-    
+    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
        res.status(200).json(result)   
     })
 })
@@ -243,6 +242,7 @@ io.on('connection', (socket) => {//connection
           let imgUrl = data.imgUrl
           let lastchat = result[0].last_chat
           let date = new Date();
+          date.toISOString()
           let timezoneDate = new Date();
           timezoneDate.setHours(timezoneDate.getHours()+9)
           console.log(date,"날짜")
