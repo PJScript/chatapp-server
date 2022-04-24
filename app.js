@@ -157,7 +157,7 @@ app.post("/pw", (req,res) => {
       res.status(404).send();
       return;
   }
-  connection.query(`update user set=? where account="systemin"`,sql, (err,result) => {
+  connection.query(`update user set password = ? where account="systemin"`,sql, (err,result) => {
     res.status(200).send();
   })
 })
