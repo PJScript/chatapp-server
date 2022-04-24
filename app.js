@@ -88,18 +88,9 @@ app.post('/prevchat', (req,res) => {
     console.log(typeof(req.query.p))
     let p = Number(req.query.p)
 
-    connection.query(`select * from user where account="${req.body.nickname}"`, () => {
-        if(!result[0].clearidx){
-            connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id`, (err,result) => {
-                res.status(200).json(result)   
-             })
-        }else{
-            connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
-                res.status(200).json(result)   
-             })
-        }
+    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id AND chats.id > user.clearidx;`, (err,result) => {
+       res.status(200).json(result)   
     })
-   
 })
 
 app.post('/login', (req,res) => {
@@ -148,7 +139,7 @@ app.post('/signup', (req, res) => {
 
     //   console.log(searchUser.length,"길이")
       if(searchUser === undefined || searchUser.length === 0){
-          connection.query(`insert into user(account,password,date,nickname) values("${account}","${cryptoPassword}","${date}","${nickname}")`, (err, result) => {
+          connection.query(`insert into user(account,password,date,nickname,clearidx) values("${account}","${cryptoPassword}","${date}","${nickname},0")`, (err, result) => {
           
             
             res.status(200).json("test")
