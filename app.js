@@ -69,9 +69,11 @@ app.get('/home', (req, res) => {
     res.status(200).send('get home')
 })
 
-app.post('/removechat', () => {
+app.post('/removechat', (req,res) => {
     let date = new Date().toUTCString()
-    connection.query(`update user set date=${date}`)
+    connection.query(`update user set date=${date}`,()=>{
+        res.status(200).send();
+    })
 })
 
 app.post('/prevchat', (req,res) => {
