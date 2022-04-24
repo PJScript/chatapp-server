@@ -69,11 +69,16 @@ app.get('/home', (req, res) => {
     res.status(200).send('get home')
 })
 
+app.post('/removechat', () => {
+    let date = new Date().toUTCString()
+    connection.query(`update user set date=${date}`)
+})
+
 app.post('/prevchat', (req,res) => {
     console.log(req.body)
     console.log(typeof(req.query.p))
     let p = Number(req.query.p)
-    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname from chats, user where chats.accountidx = user.id;`, (err,result) => {
+    connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname,user.date from chats, user where chats.accountidx = user.id;`, (err,result) => {
     
        res.status(200).json(result)   
     })
