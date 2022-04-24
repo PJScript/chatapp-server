@@ -72,10 +72,10 @@ app.get('/home', (req, res) => {
 app.post('/removechat', (req,res) => {
     let date = new Date().toUTCString()
     console.log("test",req.body)
-    connection.query(`SELECT LAST_INSERT_ID() AS chats`, (err,result) =>{
+    connection.query(`select * from chats order by id desc LIMiT 1,1;`, (err,result) =>{
       console.log(result,"result-testetst")
 
-      connection.query(`update user set clearidx="" where nickname="${req.body.nickname}"`,()=>{
+      connection.query(`update user set clearidx=${result[0].id} where nickname="${req.body.nickname}"`,()=>{
         res.status(200).send();
     })
     })
