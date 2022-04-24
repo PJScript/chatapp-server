@@ -124,6 +124,7 @@ app.get('/logout', (req,res) => {
 })
 
 app.post('/signup', (req, res) => {
+    let id = 1
     let account = req.body.account;
     let nickname = req.body.nickname;
     let password = req.body.password
@@ -141,7 +142,7 @@ app.post('/signup', (req, res) => {
 
     //   console.log(searchUser.length,"길이")
       if(searchUser === undefined || searchUser.length === 0){
-          connection.query(`insert into user(account,password,date,nickname,clearidx) values("${account}","${cryptoPassword}",${date},"${nickname},1")`, (err, result) => {
+          connection.query(`insert into user(account,password,date,nickname,clearidx) values("${account}","${cryptoPassword}",${date},"${nickname},${id}")`, (err, result) => {
             console.log(result,"result123123")
             
             res.status(200).json("test")
