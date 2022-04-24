@@ -71,6 +71,7 @@ app.get('/home', (req, res) => {
 
 app.post('/removechat', (req,res) => {
     let date = new Date().toUTCString()
+    console.log("test",res.body)
     connection.query(`update user set clearidx=${date} where nickname="${res.body.nickname}"`,()=>{
         res.status(200).send();
     })
