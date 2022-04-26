@@ -169,9 +169,26 @@ app.post('/clearall', (req,res) => {
 })
 
 app.post('/all', (req,res) => {
-    connection.query(`select * from user where id > 2 AND del_yn=0 AND NOT account="systemtime"`, (err,result) => {
+    connection.query(`select * from user where id > 2 AND del_yn=0 AND AND access=1 NOT account="systemtime"`, (err,result) => {
 res.status(200).json(result)
     })
+})
+
+app.post("/denieduser", (req,res) => {
+      connection.query(`select * from user where id > 2 AND del_yn=0 AND AND access=0 NOT account="systemtime" `, (err,result) => {
+        res.status(200).json(result)
+      })
+})
+
+app.post("/access", (req,res) => {
+    if(!req.body.nickname){
+        res.status(404).send()
+    }
+    let nickname = req.body.nickname
+    
+    connection.query(`update user set access=1 where nickname="${nickname}"`,(err,result) => {
+      res.status(200).send()
+    }, [])
 })
 
 app.post('/deleteuser', (req,res) => {
@@ -192,12 +209,12 @@ app.post('/signup', (req, res) => {
     let cryptoPassword = cryptoUtils(password)
     let date = new Date();
 
-    connection.query(`select * from user where account="${account}"`, (err, searchUser) => {
+    connection.query(`select * from user where account="${account} OR nickname="${nickname}""`, (err, searchUser) => {
 
 
         //   console.log(searchUser.length,"길이")
         if (searchUser === undefined || searchUser.length === 0) {
-            connection.query(`insert into user(account,password,date,clearidx,nickname,del_yn) values("${account}","${cryptoPassword}","${date}",${id},"${nickname}",0)`, (err, result) => {
+            connection.query(`insert into user(account,password,date,clearidx,nickname,del_yn,access) values("${account}","${cryptoPassword}","${date}",${id},"${nickname}",0,0)`, (err, result) => {
 
                 res.status(200).json("test")
             })
