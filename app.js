@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors")
 const server = http.createServer(app);
 const mysql = require("mysql2")
+const schedule = require("node-schedule")
 const cryptoUtils = require("./utils/cryptoUtils");
 require("dotenv").config()
 
@@ -31,6 +32,21 @@ const io = require("socket.io")(server, {
     }
 })
 
+const timeSchedule = schedule.scheduleJob("00 7 18 * * *", () => {
+    let date = new Date()
+    let month = date.getMonth() + 1
+
+    if(date.getMonth() >= 12){
+        month = 1
+    }
+
+    date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds() + ' ' + date.getDay()
+    console.log(date)
+
+    connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${25},"systemtime",null,"${date}")`, () => {
+
+    })
+})
 
 connection.connect(function (err) {
     if (err) {
@@ -86,6 +102,8 @@ app.post('/removechat', (req, res) => {
 app.post('/prevchat', (req, res) => {
     let p = Number(req.query.p)
     
+
+
     connection.query(`select * from user where nickname="${req.body.nickname}"`, (err,result) => {
 
       if(!result || result.length <= 0 || result[0].clearidx === undefined){
@@ -93,7 +111,7 @@ app.post('/prevchat', (req, res) => {
         res.status(404).send();
         return;
       }
-      connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname from chats, user where chats.accountidx = user.id AND chats.id > "${result[0].clearidx}";`, (err, result) => {
+      connection.query(`select chats.id,chats.content as message,chats.imgUrl, chats.date,user.nickname from chats, user where chats.accountidx = user.id AND chats.id > "${result[0].clearidx} AND chats.accountidx = 25";`, (err, result) => {
         res.status(200).send(result)
     })
       
@@ -123,7 +141,7 @@ app.post('/login', (req, res) => {
             let date = new Date()
             let month = date.getMonth() + 1
 
-            date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds()
+            date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds() + ' ' + date.getDay()
 
             connection.query(`update user set last_chat="${date}" where account="${account}"`, () => {
             res.status(200).json({ nickname: result[0].nickname })
@@ -136,6 +154,34 @@ app.post('/login', (req, res) => {
 
 app.get('/logout', (req, res) => {
     res.status(200).json();
+})
+
+app.post('/clearall', (req,res) => {
+    connection.query(`select * from chats order by id desc LIMiT 1,1;`, (err, result) => {
+        console.log(result, "result-testetst")
+        console.log(result[0].id, "result chats")
+
+        connection.query(`update user set clearidx=${result[0].id + 1}where id > 2;"`, () => {
+            res.status(200).send();
+        })
+    })
+    res.status(200).json()
+})
+
+app.post('/all', (req,res) => {
+    connection.query(`select * from user where id > 2 AND del_yn=0 AND NOT account="systemtime"`, (err,result) => {
+res.status(200).json(result)
+    })
+})
+
+app.post('/deleteuser', (req,res) => {
+    let nickname = req.body.nickname
+    if(!nickname){
+        res.status(404).send();
+    }
+    connection.query(`update user set del_yn=1 where nickname="${nickname}"`, () => {
+        res.status(200).send();
+    })
 })
 
 app.post('/signup', (req, res) => {
@@ -151,7 +197,7 @@ app.post('/signup', (req, res) => {
 
         //   console.log(searchUser.length,"길이")
         if (searchUser === undefined || searchUser.length === 0) {
-            connection.query(`insert into user(account,password,date,clearidx,nickname) values("${account}","${cryptoPassword}","${date}",${id},"${nickname}")`, (err, result) => {
+            connection.query(`insert into user(account,password,date,clearidx,nickname,del_yn) values("${account}","${cryptoPassword}","${date}",${id},"${nickname}",0)`, (err, result) => {
 
                 res.status(200).json("test")
             })
@@ -177,6 +223,8 @@ app.post("/pw", (req, res) => {
 app.post("/check", (req, res) => {
     let pw = req.body.pw
     connection.query(`select * from user where id=1`, (err, result) => {
+console.log(result,"결과")
+
         if (result[0].password === pw) {
             res.status(200).send()
         } else {
@@ -193,29 +241,49 @@ app.post("/check", (req, res) => {
 
 
 io.on('connection', (socket) => {//connection
+    //socket
+    // console.log(socket,"소켓 test")
+    // console.log(socket.rooms)
+    // socketId = setTimeout(()=>{
+    //   io.to(socket.id).emit("forcedexit")
+    // },9000)
     console.log("UserConnected", socket.id);
-
+    console.log(socket,"소켓")
     socket.on("join", (data) => {
+        console.log(data,"데이터")
+        let date = new Date()
+            let month = date.getMonth() + 1
+            date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds() + ' ' + date.getDay()
         if (!data.nickname) {
             io.to(socket.id).emit('exit')
             return;
         }
-        connection.query(`select * from user where nickname="${data.nickname}"`, (err, result) => {
+        console.log('조인',data)
+        console.log(data.nickname,"닉네임!!")
+        connection.query(`select * from user where nickname="${data.type}"`, (err, result) => {
             if (!result) {
                 io.to(socket.id).emit('exit', { code: 0001, msg: "비정상적인 접근" })
                 return;
             }
             userList[socket.id] = data.nickname
-            socket.broadcast.emit('welcome', `${data.nickname}님이 입장 했어요!`);
+            socket.broadcast.emit('welcome', { nickname:"systemin", message:`${data.nickname}님이 입장 했어요!`,date:date});
 
-            let date = new Date();
+            // let date = new Date()
+            // let month = date.getMonth() + 1
+            // date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds()
             let id = result[0].id
-            connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${1},"${data.nickname}님이 입장 했어요!",null,${date})`, () => {
+            connection.query(`insert into chats (accountidx,content,imgUrl,date) values(${1},"${data.nickname}님이 입장 했어요!",null,"${date}")`, () => {
 
             })
         })
     })
+    socket.on("ping", () => {
+        console.log("ping")
+    })
 
+    socket.on("pong", () => {
+        console.log("pong")
+    })
     socket.on("exit", (data) => {
     })
 
@@ -230,7 +298,7 @@ io.on('connection', (socket) => {//connection
         let imgUrl = data.imgUrl
         let date = new Date()
         let month = date.getMonth() + 1
-        date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds()
+        date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds() + ' ' + date.getDay()
         connection.query(`select * from user where nickname="${nickname}"`, (err, result) => {
             if (!data.nickname) {
                 io.to(socket.id).emit("exit", "exit")
@@ -249,10 +317,12 @@ io.on('connection', (socket) => {//connection
         console.log(socket.id, "연결 해제된 소켓 아이디")
         let message = `${userList[socket.id]} 님이 나갔습니다!`
         let date = new Date()
+        let month = date.getMonth() + 1
+        date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds() + ' ' + date.getDay()
 
         //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
-        connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,${date})`, (err, result) => {
-            socket.broadcast.emit("bye", { nickname: 'systemout', message: message })
+        connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,"${date}")`, (err, result) => {
+            socket.broadcast.emit("bye", { nickname: 'systemout', message: message,date:date })
 
         })
         delete userList[socket.id]
@@ -270,13 +340,16 @@ io.on('connection', (socket) => {//connection
 
 
         connection.query(`select * from user where nickname="${data.nickname}"`, (err, result) => {
+            console.log(data,"data")
+            console.log(result,"result test")
             let id = result[0].id
             let message = `${data.message}`
             let imgUrl = data.imgUrl
             let lastchat = result[0].last_chat
             let date = new Date()
+            console.log(date,"날짜")
             let month = date.getMonth() + 1
-            date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds()
+            date = date.getFullYear() + ' ' + month + ' ' + date.getDate() + ' ' + date.getHours() + ' ' + date.getMinutes() + ' ' + date.getSeconds() + ' ' + date.getDay()
             let fix_date = date.split(" ")
             let last_chat = result[0].last_chat.split(" ")
 
@@ -306,7 +379,9 @@ io.on('connection', (socket) => {//connection
             }
 
 
+ 
             let sql = { accountidx: id, content: message, imgUrl: imgUrl, date: date }
+
 
             //메세지 입력 시 마지막으로 보낸 시간을 항상 기록 한다.
             connection.query(`update user set last_chat="${date}" where nickname="${data.nickname}"`, (err, result) => {
@@ -320,6 +395,7 @@ io.on('connection', (socket) => {//connection
             //     console.log(socket.id,"소켓 아이디")
             //     io.to(socket.id).emit("exit","exit")
             // }
+            
             console.log("message:", data);
             data.date = date
             io.sockets.emit("message", data)
