@@ -210,7 +210,7 @@ app.post('/signup', (req, res) => {
     let cryptoPassword = cryptoUtils(password)
     let date = new Date();
     console.log(account,nickname)
-    connection.query(`select * from user where account="${account} OR nickname="${nickname}""`, (err, searchUser) => {
+    connection.query(`select * from user where account="${account}" OR nickname="${nickname}"`, (err, searchUser) => {
 
 console.log(searchUser)
         //   console.log(searchUser.length,"길이")
