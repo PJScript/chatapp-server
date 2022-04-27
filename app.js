@@ -157,7 +157,7 @@ app.get('/logout', (req, res) => {
 })
 
 app.post('/clearall', (req,res) => {
-    connection.query(`select * from chats order by id desc LIMiT 1,1;`, (err, result) => {
+    connection.query(`select * from chats order by id desc LIMIT 1,1;`, (err, result) => {
         console.log(result, "result-testetst")
         console.log(result[0].id, "result chats")
 
