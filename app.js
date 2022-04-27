@@ -283,7 +283,11 @@ io.on('connection', (socket) => {//connection
                 io.to(socket.id).emit('exit', { code: 0001, msg: "비정상적인 접근" })
                 return;
             }
+            if(!data.nickname){
+                return;
+            }
             userList[socket.id] = data.nickname
+            
             socket.broadcast.emit('welcome', { nickname:"systemin", message:`${data.nickname}님이 입장 했어요!`,date:date});
 
             // let date = new Date()
@@ -332,6 +336,10 @@ io.on('connection', (socket) => {//connection
 
     socket.on('disconnect', (data) => {
         //   console.log(socket,"소켓",data,"데이터")
+        if(!userList[socket.id]){
+            return;
+        }
+        
         console.log(socket.id, "연결 해제된 소켓 아이디")
         let message = `${userList[socket.id]} 님이 나갔습니다!`
         let date = new Date()
