@@ -161,7 +161,7 @@ app.post('/clearall', (req,res) => {
         console.log(result, "result-testetst")
         console.log(result[0].id, "result chats")
 
-        connection.query(`update user set clearidx=${result[0].id + 1}where id > 2;"`, () => {
+        connection.query(`update user set clearidx=${result[0].id + 1} where id > 2;"`, () => {
             res.status(200).send();
         })
     })
