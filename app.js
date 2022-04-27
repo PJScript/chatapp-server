@@ -129,7 +129,7 @@ app.post('/login', (req, res) => {
 
     }
 
-    connection.query(`select * from user where account="${account} where del_yn=0`, (err, result) => {
+    connection.query(`select * from user where account="${account}" where del_yn=0`, (err, result) => {
         if (result === undefined || result.length <= 0) {
             res.status(403).json("fail")
             return;
