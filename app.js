@@ -209,10 +209,10 @@ app.post('/signup', (req, res) => {
     let password = req.body.password
     let cryptoPassword = cryptoUtils(password)
     let date = new Date();
-
+    console.log(account,nickname)
     connection.query(`select * from user where account="${account} OR nickname="${nickname}""`, (err, searchUser) => {
 
-
+console.log(searchUser)
         //   console.log(searchUser.length,"길이")
         if (searchUser === undefined || searchUser.length === 0) {
             connection.query(`insert into user(account,password,date,clearidx,nickname,del_yn,access) values("${account}","${cryptoPassword}","${date}",${id},"${nickname}",0,0)`, (err, result) => {
@@ -339,7 +339,7 @@ io.on('connection', (socket) => {//connection
         if(!userList[socket.id]){
             return;
         }
-        
+
         console.log(socket.id, "연결 해제된 소켓 아이디")
         let message = `${userList[socket.id]} 님이 나갔습니다!`
         let date = new Date()
