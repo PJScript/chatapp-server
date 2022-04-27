@@ -160,7 +160,7 @@ app.post('/clearall', (req,res) => {
     connection.query(`select * from chats order by id desc LIMIT 1,1;`, (err, result) => {
         console.log(result, "result-testetst")
         console.log(result[0].id, "result chats")
-
+        console.log( typeof(result[0].id) )
         connection.query(`update user set clearidx=${result[0].id + 1} where id > 2;"`, () => {
             res.status(200).send();
         })
