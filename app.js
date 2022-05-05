@@ -288,7 +288,7 @@ io.on('connection', (socket) => {//connection
             }
             userList[socket.id] = data.nickname
             
-            socket.broadcast.emit('welcome', { nickname:"systemin", message:`${data.nickname}님이 입장 했어요!`,date:date});
+            // socket.broadcast.emit('welcome', { nickname:"systemin", message:`${data.nickname}님이 입장 했어요!`,date:date});
 
             // let date = new Date()
             // let month = date.getMonth() + 1
@@ -348,7 +348,7 @@ io.on('connection', (socket) => {//connection
 
         //   socket.broadcast.emit("bye",`${data.nickname}님이 나갔어요!`)
         connection.query(`insert into chats (accountidx,content,imgUrl,date) values(2,"${message}", null,"${date}")`, (err, result) => {
-            socket.broadcast.emit("bye", { nickname: 'systemout', message: message,date:date })
+            // socket.broadcast.emit("bye", { nickname: 'systemout', message: message,date:date })
 
         })
         delete userList[socket.id]
